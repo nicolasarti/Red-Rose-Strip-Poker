@@ -21,7 +21,7 @@ print (platform.system()) #5
 time.sleep(2)
 
 #####################################################Global constants here
-modelname = "DEMO" # model/dir name #5
+modelname = "xxxxxxxx" # model/dir name #5
 wcou = 3
 
 if platform.system() == "Windows": #5
