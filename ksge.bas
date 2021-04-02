@@ -1,4 +1,4 @@
-' KSGE K.I.S.S. STRIP GAME ENGINE VERSION 6.0 20201017
+' KSGE K.I.S.S. STRIP GAME ENGINE
 ' A STRIP GAME ENGINE BUILD WITH FREEBASIC AND BASED ON LIBVLC AND CCRYPT 
 ' THIS VERSION CAN PLAY ONLY ENCRYPTED VIDEOCLIPS AND CHECKS FOR THE RIGHT ACTIVATION KEY
 ' COMPILE WITH FREEBASIC COMPILER (FBC) TESTET WITH VERSION 1.0.7 ON LINUX (DEBIAN 10 and UBUNTU 18.04) AND WINDOWS 10
@@ -27,42 +27,52 @@
 ' VERSION 5.8 20200918 fixed key read bug
 ' VERSION 5.9 20201001 fixed md5 *.cpt checksum bug on linux
 ' VERSION 6.0 20201017 support for PokerView.py added popup when opponent lost
-
+' VERSION 6.1 20210310 support for kspc-url v2, will launch it when game start if a valid activation file is present
+' VERSION 6.2 20210311 fixed multiple nic mac address bug + artwork on terminal window
 
 dim totaladdr as integer
 dim shared K1 as string*64
 dim shared HW1 as string*64
 dim shared lin as string*64
-dim Kh as string*64
+dim shared Kh as string*64
 dim raddress(1 to 20) as string
 dim usdprice as integer
 dim randomizeprice as double
 dim shared action as string
 dim shared shash as string
 dim shared shashw as string
+dim shared emlf as string
+dim shared EML as string
+dim shared rown as string
+dim shared rurl as string
+dim shared kspcha as string
+dim shared kspchaw as string
 
 
 '********************************************************
 'static parameters previously passed via command line
-const C1 as string = "DEMO" 'model name wich should be equal to folder name
+const C1 as string = "xxxxxxxxx" 'model name wich should be equal to folder name
 K1 = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 'key used for encrypt media content and activation file
 Kh = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ' key used for temporary activation file (helpme)
 shash = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  -" 'single hash for all clip *.cpt files
-shashw = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  -" 'single hash for all clip *.cpt files for wiindows platform
-usdprice = 3 'target price in USD (intended more or less because of volatility and randomization), please insert integer number example: 5
+shashw = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  -" 'single hash for all clip *.cpt files for windows platform
+kspcha = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  kspc"
+kspchaw= "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  kspc.exe"
+usdprice = 50 'target price in USD (intended more or less because of volatility and randomization), please insert integer number example: 5
 randomizeprice = 0.00009999 'randomize price in satoshi
 raddress(1) = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 'address to check transaction for (where monetize)
 totaladdr = 1
+rurl = "https://xxxxxxxxxxxxxxxxxxxxxxxxxx"
+rown = "xxxx@xxxxx"
 const C3 as string = "mkv" 'clip file format
 'print "K1:" 'debug
 'print K1 'debug
 'sleep 'debug
 const C2 as string = "0" 'debug 0=no 1=yes
-const C4 as string = "xxx xxxx STRIP POKER" 'game name
+const C4 as string = "xxxxxxxx STRIP POKER" 'game name
 dim C5 as string = Command(1)  'number of winning rows to strip opponent if no specified in command line
-const C5bis as string = "2" 'numbero of standard rows (in case Commnand(1) = 0
-const C6 as integer = 5 'number of stages allowed for demo
-
+const C5bis as string = "2" 'number of standard rows (in case Commnand(1) = 0
+const C6 as integer = 2 'number of stages allowed for demo
 '********************************************************
 
 dim shared endflg as string
@@ -78,7 +88,7 @@ dim shared CC1 as string
    CC1 = "../" + C1
 #ENDIF
 
-print "KSGE VERSION 6.0 FOR: " ; OS
+print C4 + " FOR: " ; OS
 sleep 1000
 
 'dim shared tmpplayrootfolder as string
@@ -103,7 +113,24 @@ dim shared tmpplayfolder as string
 'set right working folder (where are clips and action file); strip game must use the same action file
 'mkdir tmpplayrootfolder
 
-
+sub artwork
+	print "_,--._.-,"
+	print "   /\_r-,\_ )"
+	print ".-.) _;='_/ (.;    " + C4
+	print " \ \'     \/S )    with"
+	print "  L.'-. _.'|-'     " + C1
+	print " <_`-'\'_.'/"
+	print "   `'-._( \    " + rurl
+	print "    ___   \\,      ___"
+	print "    \ .'-. \\   .-'_. /"
+	print "     '._' '.\\/.-'_.'"
+	print "        '--``\('--'"
+	print "              \\"
+	print "              `\|"
+	if emlf <> "BLANK" and emlf <> "" then
+		print "activated by " + emlf + " - thank YOU!"
+	end if
+end sub
 
 
 sub actiondone (acted as string)
@@ -116,13 +143,16 @@ End sub
 sub chkbin 'chk if the bin(s) are genuine
 	dim cmdshl as string
 	dim cmdshl2 as string
+	dim cmdshl3 as string
 	
 	#IFDEF __FB_WIN32__
 		cmdshl = ("md5\md5.exe " + decryptexename)
 		cmdshl2 = ("dir *.cpt /b /os | md5\md5.exe")
+		cmdshl3 = ("md5\md5.exe kspc.exe")
 	#ELSE
 		cmdshl = ("md5sum " + decryptexename)
 		cmdshl2 = ("du --apparent-size -k *.cpt | md5sum")
+		cmdshl3 = ("md5sum kspc")
 	#ENDIF
 	
 	Open Pipe cmdshl For Input As #1
@@ -155,6 +185,20 @@ sub chkbin 'chk if the bin(s) are genuine
 		end if
 	'Loop
 	
+	Open Pipe cmdshl3 For Input As #1
+	'Do Until EOF(1)
+		Line Input #1, ln
+		Close #1
+		if ln <> kspchaw and ln <> kspcha then 
+			action = "qui" '********* DEBUG ***************
+			print ln
+			print "ERROR: WRONG KSPC CHECKSUM!"
+			sleep 3000,1
+			'Close #1
+			'end 'debug ************************************************************** 
+		end if
+	'Loop
+	
 	
 	#IFDEF __FB_WIN32__
 		cmdshl = ("md5\md5.exe libvlc.dll")
@@ -177,7 +221,6 @@ sub chkbin 'chk if the bin(s) are genuine
 	
 end sub
 
-dim shared EML as string
 sub chkhw
 	'check if hw is ok
 	dim cmd2 as string
@@ -198,31 +241,40 @@ sub chkhw
 	#ELSE
 		Open Pipe "ip addr | grep ether" For Input As #2
 	#ENDIF
-	
-	'Do Until EOF(2)
+	dim looflg as integer
+	looflg = 0
+	Do Until EOF(2) '6.2
 		Line Input #2, lin
-		Close #2
+		'Close #2 '6.2
 		'print "lin:" 'debug
 		'print lin 'debug
 		if lin = HW1 or HW1 = K1 then
 			'Close #2
+			'print
 			print
-			print
-			'---------------------------------------------print "Thank YOU for supporting this game: "
+			'print "Thank YOU for supporting this game!!"
+			'print "game activated by:"
+			'print EML
+			artwork
 			'------------------------------------------print EML
 			'-----------------------------------------shell "echo " + EML + " thank YOU for supporting this game!"
 			if lin = HW1 then 
-				print "please note that your game key will work only on this PC"
+				print "please note that this game will work only on this PC"
 			else 
-				'--------------------------------------------------------------print "your game key has no limits"
+				print "your game key has no limits"
 			end if
 			print
 			print
 			sleep 500,1
-			goto rungame:
+			looflg = 1 '6.2
+			'goto rungame: '6.2
 		end if
-	'Loop
-	'Close #2
+	Loop '6.2
+	Close #2 '6.2
+	if looflg = 1 then '6.2
+		goto rungame:
+	endif
+	artwork
 	print "this game is a demo; "
 	'-------------------------------------------------print "if you like and want to finish undress the opponent, "
 	'------------------------------------------------print "please support it... thank you"
@@ -264,7 +316,7 @@ if C5 < "1" then C5 = C5bis
 
 color 15,1
 'cls
-print "KISS STRIP GAME ENGINE"
+print C4
 'print "this is free/opensource software"
 'print "model name: " + C1
 
@@ -372,6 +424,119 @@ sub avoidduplicate
 	loop
 end sub
 
+sub chkpop '6.1
+dim kc1 as string 
+	dim cmd2 as string
+	'dim emlf as string
+	dim hwrf as string 
+	dim hwr as string
+	dim popf as string
+	dim kc1f as string
+	dim pop as string
+	'#IFDEF __FB_WIN32__
+	'open pipe ("echo " + Kh + "| ccrypt-win\ccrypt.exe -c -k - " + CC1 + "-pop-key.cpt") for Input as #3
+	'#ELSE
+	'open pipe ("echo " + Kh + "| ./ccrypt/ccrypt -c -k - " + CC1 + "-pop-key.cpt") for Input as #3
+	'#ENDIF
+	'	line input #3, pop
+	'	line input #3, kc1
+		'print pop 'debug
+		'print kc1 'debug
+	'	print
+	'close #3
+	'sleep 100,1
+	
+	#IFDEF __FB_WIN32__
+	open pipe ("echo " + K1 + "| ccrypt-win\ccrypt.exe -c -k - " + CC1 + "-key.cpt") for Input as #3
+	#ELSE
+	open pipe ("echo " + K1 + "| ./ccrypt/ccrypt -c -k - " + CC1 + "-key.cpt") for Input as #3
+	#ENDIF
+		line input #3, emlf
+		line input #3, hwrf
+		line input #3, kc1f 
+	close #3
+	if emlf <> "" and emlf <> "BLANK" then
+		color 15,1
+		cls
+		print
+		print "Game activated by: " + emlf
+		print
+		sleep 2000,1
+	end if
+	'sleep 100,1 *************
+	
+	#IFDEF __FB_WIN32__
+	Open Pipe "getmac /fo csv /nh" For Input As #2
+	#ELSE
+	Open Pipe "ip addr | grep ether" For Input As #2
+	#ENDIF
+	dim popch1 as integer
+	dim popch2 as integer
+	popch1 = 0
+	popch2 = 0
+	Do Until EOF(2) '6.2
+	Line Input #2, hwr
+	'Close #2 '6.2
+	sleep 100,1
+	
+	if kc1f = c1 and hwr = hwrf then
+		'print "goto nocheck" 'debug
+		'sleep 'debug
+		'#IFDEF __FB_WIN32__
+		'shell "start kspc.exe"
+		'#ELSE
+		'shell "xterm -fa 'Monospace' -fs 14 -e ./kspc"
+		'#ENDIF
+		goto nocheck
+	endif
+	
+	if kc1f = c1 and hwr <> hwrf then
+			'#IFDEF __FB_WIN32__
+			'shell "start kspc.exe"
+			'#ELSE
+			'shell "xterm -fa 'Monospace' -fs 14 -e ./kspc"
+			'#ENDIF
+			popch1 = 1
+			'end 6.2
+	endif
+	
+	if kc1f = c1 and hwrf = "BLANK" then ' pending activation
+		popch1 = 1
+	end if
+	
+	'if kc1 = C1 and __DATE_ISO__ < pop then
+			'#IFDEF __FB_WIN32__
+			'shell "start kspc.exe"
+			'#ELSE
+			'shell "xterm -fa 'Monospace' -fs 14 -e ./kspc"
+			'#ENDIF
+	'		popch2 = 1
+			'end 6.2
+	'endif 
+	loop '6.2
+	Close #2 '6.2
+	if popch1 =1 then
+		#IFDEF __FB_WIN32__
+		shell "start kspc.exe"
+		#ELSE
+		shell "xterm -fa 'Monospace' -fs 14 -e ./kspc"
+		#ENDIF
+		Close #2 '6.2
+		end
+	endif
+	if popch2 = 1 then
+		#IFDEF __FB_WIN32__
+		shell "start kspc.exe"
+		#ELSE
+		shell "xterm -fa 'Monospace' -fs 14 -e ./kspc"
+		#ENDIF
+		Close #2 '6.2
+		end
+	endif
+	nocheck:
+	Close #2 '6.2
+end sub
+
 
 
 
@@ -411,6 +576,7 @@ var pPlayer = libvlc_media_player_new(pInstance) 'libvlc_media_player_t ptr
 
 ' MAIN
 chkbin
+chkpop '6.1
 Randomize Timer
 ' set random tmp file/folder
 'tmpplayfolder = tmpplayrootfolder + str(Int(rnd_range(1, 999999))) + "/" '(random folder... deprecated)
@@ -440,12 +606,17 @@ stagescounter
 
 
 while action <> "qui"
-print "KISS STRIP GAME ENGINE - version 6.0 20201017"
+print C4
 print "this is free/opensource software, source code avaible at:"
-print "https://github.com/ksge"
-print "you are free to create your own strip game with your own media content!"
-print
-print "model name: " + C1
+print "https://github.com/nicolasarti"
+artwork
+'print
+'print "model name: " + C1
+'print
+'if emlf <> "" then
+'	print "activated by: " + emlf
+'end if
+'print
 print
 
 if currentstage > 0 then
@@ -493,9 +664,10 @@ if currentstage > 0 then
 		clipcounter (nclipend)
 		cliptoplay = nclipend + str(Int(rnd_range(1, clipcount+1))) + ncliptype 
 		avoidduplicate
-		print EML
-		print "Thank YOU for supporting this game!"
-		print EML
+		'print emlf
+		'print "Thank YOU for supporting this game!"
+		'print emlf
+		artwork
 		actiondone ("end")
 	case "qui"
 		print "quitting from ksge, no key?"
