@@ -13,8 +13,8 @@
 # for deployment pyinstaller is needed install with pip install pyinstaller
 
 
-#deploy with pyinstaller /home/*/.local/bin/pyinstaller --noconsole --onefile PokerView.py
-#deploy with pyinstaller /home/*/.local/bin/pyinstaller --noconsole --onefile PokerModel.py
+#deploy with pyinstaller: /home/*/.local/bin/pyinstaller --noconsole --onefile PokerView.py
+#deploy with pyinstaller: /home/*/.local/bin/pyinstaller --noconsole --onefile PokerModel.py
 #deploy with C:\Users\*\AppData\Local\Programs\Python\Python37\Scripts\pyinstaller.exe --noconsole --onefile PokerView.py
 #deploy with C:\Users\*\AppData\Local\Programs\Python\Python37\Scripts\pyinstaller.exe --noconsole --onefile PokerModel.py
 
@@ -32,8 +32,8 @@ from pygame import mixer #9
 
 
 ###############################################Global constants here
-gname = "Strip Poker" # game name 5
-modelname = "DEMO" # model/dir name #5
+gname = "xxxxxxxxxxxxx" # game name 5
+modelname = "xxxxxxxxxxx" # model/dir name #5
 wcou = 3
 if platform.system() == "Windows": #5
 	wdir = ".ksge"
