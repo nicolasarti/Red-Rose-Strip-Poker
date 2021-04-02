@@ -2,7 +2,7 @@ from tkinter import *
 #from PIL import Image
 explanation = """You beat me, my compliments...  
 we can continue playing cards if you want..
-THANK YOU FOR PLAYING THIS DEMO!"""
+THANK YOU FOR PLAYING xxxxxxxxxxxxxxxxxxx!"""
 root = Tk()
 root.call('wm', 'attributes', '.', '-topmost', '1')
 root.title("my compliments..")
