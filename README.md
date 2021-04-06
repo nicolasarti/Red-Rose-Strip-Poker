@@ -12,4 +12,7 @@ Designed to potentially work also through other payment methods.
 Born with the idea of providing an useful tool for photographers, video makers and models to be able to express their art and monetize by creating a customized Strip Poker themed video game, protecting their work and privacy.
 
 For see full working games done with this engine check:
+
 https://nicolasarti.wordpress.com/2021/03/22/red-rose-strip-poker-with/
+
+http://rrsp.lovestoblog.com/
