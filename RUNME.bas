@@ -23,7 +23,7 @@ chdir "core"
 'shell "./ksec"
 
 #IFDEF __FB_WIN32__
-	shell "start ksge.exe 0"
+	shell "start /max ksge.exe 0"
 #ELSE
 	shell "xterm -fa 'Monospace' -fs 14 -e ./ksge 0"
 #ENDIF
