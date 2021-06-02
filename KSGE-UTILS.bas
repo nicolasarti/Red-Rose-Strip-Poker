@@ -16,13 +16,16 @@ dim popenc as integer
 dim rurl as string
 dim pop as string
 dim shared rown as string
+dim shared kspcha as string
+dim shared kspchaw as string
+dim shared scode as string
 
 
 '********************************************************
-'static parameters previously passed via command line
-const C1 as string = "xxxxxxxxx" 'model name wich should be equal to folder name
-K1 = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 'key used for encrypt media content and activation file
-Kh = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ' key used for temporary activation file (helpme)
+static parameters previously passed via command line
+const C1 as string = "XXXXXX" 'model name wich should be equal to folder name
+K1 = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 'key used for encrypt media content and activation file
+Kh = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ' key used for temporary activation file (helpme)
 shash = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  -" 'single hash for all clip *.cpt files
 shashw = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  -" 'single hash for all clip *.cpt files for windows platform
 kspcha = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  kspc"
@@ -31,8 +34,8 @@ usdprice = 50 'target price in USD (intended more or less because of volatility 
 randomizeprice = 0.00009999 'randomize price in satoshi
 raddress(1) = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 'address to check transaction for (where monetize)
 totaladdr = 1
-rurl = "https://xxxxxxxxxxxxxxxxxxxxxxxxxx"
-rown = "xxxx@xxxxx"
+rurl = "http://xxxxxxxxxxxxxxxxxxxx"
+rown = "xxxxxxxxxxxxxxxxx@xxxxx.xxx"
 const C3 as string = "mkv" 'clip file format
 'print "K1:" 'debug
 'print K1 'debug
@@ -41,7 +44,8 @@ const C2 as string = "0" 'debug 0=no 1=yes
 const C4 as string = "xxxxxxxx STRIP POKER" 'game name
 dim C5 as string = Command(1)  'number of winning rows to strip opponent if no specified in command line
 const C5bis as string = "2" 'number of standard rows (in case Commnand(1) = 0
-const C6 as integer = 2 'number of stages allowed for demo
+const C6 as integer = 3 'number of stages allowed for demo
+scode = "https://github.com/xxxxxxxxxxx"
 
 '********************************************************
 
