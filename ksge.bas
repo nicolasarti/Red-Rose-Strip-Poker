@@ -29,6 +29,7 @@
 ' VERSION 6.0 20201017 support for PokerView.py added popup when opponent lost
 ' VERSION 6.1 20210310 support for kspc-url v2, will launch it when game start if a valid activation file is present
 ' VERSION 6.2 20210311 fixed multiple nic mac address bug + artwork on terminal window
+' VERSION 6.3 20210601 small bugfixes on game startup on win
 
 dim totaladdr as integer
 dim shared K1 as string*64
@@ -47,13 +48,14 @@ dim shared rown as string
 dim shared rurl as string
 dim shared kspcha as string
 dim shared kspchaw as string
+dim shared scode as string
 
 
 '********************************************************
 'static parameters previously passed via command line
-const C1 as string = "xxxxxxxxx" 'model name wich should be equal to folder name
-K1 = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 'key used for encrypt media content and activation file
-Kh = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ' key used for temporary activation file (helpme)
+const C1 as string = "XXXXXX" 'model name wich should be equal to folder name
+K1 = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 'key used for encrypt media content and activation file
+Kh = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ' key used for temporary activation file (helpme)
 shash = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  -" 'single hash for all clip *.cpt files
 shashw = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  -" 'single hash for all clip *.cpt files for windows platform
 kspcha = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  kspc"
@@ -62,8 +64,8 @@ usdprice = 50 'target price in USD (intended more or less because of volatility 
 randomizeprice = 0.00009999 'randomize price in satoshi
 raddress(1) = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 'address to check transaction for (where monetize)
 totaladdr = 1
-rurl = "https://xxxxxxxxxxxxxxxxxxxxxxxxxx"
-rown = "xxxx@xxxxx"
+rurl = "http://xxxxxxxxxxxxxxxxxxxx"
+rown = "xxxxxxxxxxxxxxxxx@xxxxx.xxx"
 const C3 as string = "mkv" 'clip file format
 'print "K1:" 'debug
 'print K1 'debug
@@ -72,7 +74,8 @@ const C2 as string = "0" 'debug 0=no 1=yes
 const C4 as string = "xxxxxxxx STRIP POKER" 'game name
 dim C5 as string = Command(1)  'number of winning rows to strip opponent if no specified in command line
 const C5bis as string = "2" 'number of standard rows (in case Commnand(1) = 0
-const C6 as integer = 2 'number of stages allowed for demo
+const C6 as integer = 3 'number of stages allowed for demo
+scode = "https://github.com/xxxxxxxxxxx"
 '********************************************************
 
 dim shared endflg as string
@@ -114,19 +117,20 @@ dim shared tmpplayfolder as string
 'mkdir tmpplayrootfolder
 
 sub artwork
-	print "_,--._.-,"
-	print "   /\_r-,\_ )"
-	print ".-.) _;='_/ (.;    " + C4
-	print " \ \'     \/S )    with"
-	print "  L.'-. _.'|-'     " + C1
-	print " <_`-'\'_.'/"
-	print "   `'-._( \    " + rurl
-	print "    ___   \\,      ___"
-	print "    \ .'-. \\   .-'_. /"
-	print "     '._' '.\\/.-'_.'"
-	print "        '--``\('--'"
-	print "              \\"
-	print "              `\|"
+	cls '6.3
+	print "xxxxxxxxx"
+	print "   xxxxxxx_ )"
+	print "xxxxxxxxxxxxxxx    " + C4
+	print " x xx     xxx x    with"
+	print "  xxxxx xxxxxx     " + C1
+	print " xxxxxxxxxxx"
+	print "   xxxxxxxx    " + rurl
+	print "    ___   xxx      ___"
+	print "    xxxxxxxxx   xxxxxxx"
+	print "     xxxx xx\xxx-x_xx"
+	print "        xx-x`x(xxx'"
+	print "              xx"
+	print "              xxx"
 	if emlf <> "BLANK" and emlf <> "" then
 		print "activated by " + emlf + " - thank YOU!"
 	end if
@@ -306,6 +310,8 @@ end sub
 if C5 < "1" then C5 = C5bis
 'print "./ksbj " + C5 + " " + """" + C4 + """" + " " + """" + C1 + """" + " " + C2 + " &" 'debug
 
+actiondone ("car") '6.3
+sleep 1000,1 '6.3
 #IFDEF __FB_WIN32__
 	'shell "start ksbj.exe " + C5 + " " + """" + C4 + """" + " " + """" + C1 + """" + " " + C2
 	shell "start PokerView.exe"
@@ -608,7 +614,7 @@ stagescounter
 while action <> "qui"
 print C4
 print "this is free/opensource software, source code avaible at:"
-print "https://github.com/nicolasarti"
+print scode
 artwork
 'print
 'print "model name: " + C1
@@ -707,7 +713,8 @@ if currentstage = 0 then
 	action = "car"
 end if
 	
-   if C2 = "1" then print mediaFileName 'debug
+   'if C2 = "1" then print mediaFileName 'debug
+   print mediaFileName
    ' check decrypter checksum
    'chkbin
    ' decrypt content
