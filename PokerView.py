@@ -5,6 +5,7 @@
 #7 python 3 translation
 #8 if ksge outputs "end" then quit game
 #9 mp3 soundtrack support added
+#10 fixed "not responding" in some phases of the game
 
 # tested with python3.7
 # pygame is needed install with pip install pygame
@@ -13,8 +14,8 @@
 # for deployment pyinstaller is needed install with pip install pyinstaller
 
 
-#deploy with pyinstaller: /home/*/.local/bin/pyinstaller --noconsole --onefile PokerView.py
-#deploy with pyinstaller: /home/*/.local/bin/pyinstaller --noconsole --onefile PokerModel.py
+#deploy with /home/*/.local/bin/pyinstaller --noconsole --onefile PokerView.py
+#deploy with /home/*/.local/bin/pyinstaller --noconsole --onefile PokerModel.py
 #deploy with C:\Users\*\AppData\Local\Programs\Python\Python37\Scripts\pyinstaller.exe --noconsole --onefile PokerView.py
 #deploy with C:\Users\*\AppData\Local\Programs\Python\Python37\Scripts\pyinstaller.exe --noconsole --onefile PokerModel.py
 
@@ -32,8 +33,8 @@ from pygame import mixer #9
 
 
 ###############################################Global constants here
-gname = "xxxxxxxxxxxxx" # game name 5
-modelname = "xxxxxxxxxxx" # model/dir name #5
+gname = "Strip Poker" # game name 5
+modelname = "xxxxxxxx" # model/dir name #5
 wcou = 3
 if platform.system() == "Windows": #5
 	wdir = ".ksge"
@@ -139,7 +140,7 @@ class Control:
 		xwai = f.read()
 		f.close() 
 		if xwai == "end":
-			print ("u won!")
+			print ("You beat me... it's so embarrassing..")
 			pygame.quit();sys.exit()
 		##
 
@@ -199,7 +200,7 @@ class Control:
 		self.font = pygame.font.Font('font/IndianPoker.ttf', 25)
 		self.font.set_bold(True)
 		self.font2 = pygame.font.Font('font/CoffeeTin.ttf', 60)
-		self.youText = self.font.render("Your Hand", 1, BLUE) # font color
+		self.youText = self.font.render("Your Hand", 1, BLACK) # font color
 		self.youSize = self.font.size("Your Hand")
 
 		self.youLoc = (self.cardLoc[0][0],self.cardLoc[0][1] - 30)#(self.youLoc[0], self.buffer + self.scale * self.cardSize[1]/2 - self.youSize[1]/2)
@@ -220,7 +221,7 @@ class Control:
 		xwai = f.read()
 		f.close() 
 		if xwai == "end":
-			print ("u won!")
+			print ("You beat me... it's so embarrassing..")
 			pygame.quit();sys.exit()
 		##
 		for event in pygame.event.get():
@@ -250,9 +251,9 @@ class Control:
 						f = open(wfile, "r")
 						xwai = f.read()
 						f.close() 
-						print (xwai)
+						#print (xwai) ......................................................
 						if xwai == "end":
-							print ("u won!")
+							print ("You beat me... it's so embarrassing..")
 							pygame.quit();sys.exit()
 						##
 						self.poker.replace(self.poker.playerHand)
@@ -312,12 +313,12 @@ class Control:
 		#initialize variables for labeling the hands
 		playerScore = self.poker.convert_score(self.result[0])
 		#3self.youText = self.font.render(playerScore, 1, BLACK)
-		self.youText = self.font.render(playerScore, 1, BLUE) #3 font color
+		self.youText = self.font.render(playerScore, 1, BLACK) #3 font color
 		self.youSize = self.font.size(playerScore)
 		self.youLoc = (self.cardLoc[0][0],self.cardLoc[0][1] - 30)
 
 		comp1Score = self.poker.convert_score(self.result[1])
-		self.comp1Label = self.font.render(comp1Score, 1, PINK) #3 font color
+		self.comp1Label = self.font.render(comp1Score, 1, BLACK) #3 font color
 		self.comp1LabelSize = self.font.size(comp1Score)
 		self.comp1LabelLoc = (self.comp1Loc[0], self.comp1Loc[1] - 30)
 
@@ -338,7 +339,7 @@ class Control:
 		xwai = f.read()
 		f.close() 
 		if xwai == "end":
-			print ("u won!")
+			print ("You beat me... it's so embarrassing..")
 			pygame.quit();sys.exit()
 		##
 		for event in pygame.event.get():
@@ -403,8 +404,8 @@ class Control:
 		#mescold = self.poker.scores[1] #3
 		
 		#create labels for each player
-		self.playerScoreLabel = self.font.render("You: " +str(self.poker.scores[0])+ "/"+ str(wcou), 1, BLUE) # font color
-		self.comp1ScoreLabel = self.font.render("Me: "  +str(self.poker.scores[1])+ "/"+ str(wcou), 1, PINK) # font color
+		self.playerScoreLabel = self.font.render("You: " +str(self.poker.scores[0])+ "/"+ str(wcou), 1, BLACK) # font color
+		self.comp1ScoreLabel = self.font.render("Me: "  +str(self.poker.scores[1])+ "/"+ str(wcou), 1, BLACK) # font color
 		
 		#1self.comp2ScoreLabel = self.font.render("Computer 2: "  +str(self.poker.scores[2]), 1, BLACK)
 		#1self.comp3ScoreLabel = self.font.render("Computer 3: "  +str(self.poker.scores[3]), 1, BLACK)
