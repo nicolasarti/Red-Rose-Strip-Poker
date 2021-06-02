@@ -16,3 +16,8 @@ For see full working games done with this engine check:
 https://nicolasarti.wordpress.com/2021/03/22/red-rose-strip-poker-with/
 
 http://rrsp.lovestoblog.com/
+
+20210602 updated:
+- fixed bug that in some rare cases prevented the game from starting
+- fixed bug that caused very often the non-response of commands
+- various small improvements and general performance optimization
