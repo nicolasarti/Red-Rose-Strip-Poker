@@ -7,6 +7,8 @@
 #4 if opponent wins 5 games winning count will be reset to 0
 #5 ksge integration
 #6 python3 translation 
+#7 fixes for not responding when repeating click on replace during scenes
+#10 fixed "not responding" in some phases of the game
 
 
 import operator
@@ -18,10 +20,10 @@ import time
 
 
 print (platform.system()) #5
-time.sleep(2)
+#7 time.sleep(0.5)
 
 #####################################################Global constants here
-modelname = "xxxxxxxx" # model/dir name #5
+modelname = "xxxxxx" # model/dir name #5
 wcou = 3
 
 if platform.system() == "Windows": #5
@@ -241,25 +243,38 @@ class Poker:
 		if winner == score1:
 			self.scores[0] += 1
 			if self.scores[0] == (wcou - 1):
+				##10 write los to ksge and wait
+				#f = open(wfile, "w")
+				#f.write("los")
+				#f.close()
+				#print ("Oh no,lLooks like I lose")
+				#xwai = "los"
+				#while xwai == "los":
+				#	print ("los-waiting")
+				#	time.sleep(1)
+				#	f = open(wfile, "r")
+				#	xwai = f.read()
+				#	f.close() 
 				##5 write risk to ksge
 				f = open(wfile, "w")
 				f.write("ris")
 				f.close() 
-				print ("ris")
-				time.sleep(2)
+				print ("oh my god, if you win again I'll have to take something off..")
+				#7 time.sleep(2)
 				##5
 			else:
 				##5 write los to ksge and wait
 				f = open(wfile, "w")
 				f.write("los")
-				f.close() 
-				xwai = "los"
-				while xwai == "los":
-					print ("los-waiting")
-					time.sleep(1)
-					f = open(wfile, "r")
-					xwai = f.read()
-					f.close() 
+				f.close()
+				print (".. I lost ..")
+				#7 xwai = "los"
+				#7 while xwai == "los":
+				#7	print ("los-waiting")
+					#7 time.sleep(1)
+				#7	f = open(wfile, "r")
+				#7	xwai = f.read()
+				#7	f.close() 
 				##5
 
 		elif winner == score2:
@@ -268,13 +283,14 @@ class Poker:
 			f = open(wfile, "w")
 			f.write("win")
 			f.close() 
-			xwai = "win"
-			while xwai == "win":
-				print ("win-waiting")
-				time.sleep(1)
-				f = open(wfile, "r")
-				xwai = f.read()
-				f.close() 
+			print ("I won!")
+			#7 xwai = "win"
+			#7 while xwai == "win":
+			#7	print ("win-waiting")
+				#7 time.sleep(1)
+			#7	f = open(wfile, "r")
+			#7	xwai = f.read()
+			#7	f.close() 
 			##5
 			# if risk status play again risk
 			if self.scores[0] == (wcou - 1):
@@ -282,19 +298,27 @@ class Poker:
 				f = open(wfile, "w")
 				f.write("ris")
 				f.close() 
-				print ("ris")
+				print ("oh my god, if you win again I'll have to take something off ..")
 				##5
 		
 		if self.scores[0] >= wcou: #winning count
 			self.scores[0] = 0
 			self.scores[1] = 0
+			#10 wait for los play
+			xwai = "los"
+			while xwai == "los":
+				print ("Looks like I lose")
+				time.sleep(1)
+				f = open(wfile, "r")
+				xwai = f.read()
+				f.close() 
 			##5 write off to ksge and wait
 			f = open(wfile, "w")
 			f.write("off")
 			f.close() 
 			xwai = "off"
 			while xwai == "off":
-				print ("off-waiting")
+				print ("You won this series, I don't believe it, do I really have to undress?..")
 				time.sleep(1)
 				f = open(wfile, "r")
 				xwai = f.read()
@@ -308,13 +332,14 @@ class Poker:
 			f = open(wfile, "w")
 			f.write("win")
 			f.close() 
-			xwai = "win"
-			while xwai == "win":
-				print ("win-waiting")
-				time.sleep(1)
-				f = open(wfile, "r")
-				xwai = f.read()
-				f.close() 
+			print ("I won this series! what you will take off?")
+			#7 xwai = "win"
+			#7 while xwai == "win":
+			#7	print ("win-waiting")
+				#7 time.sleep(1)
+			#7	f = open(wfile, "r")
+			#7	xwai = f.read()
+			#7	f.close() 
 			##5
 
 		#2elif winner == score3:
